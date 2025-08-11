@@ -14,27 +14,82 @@ class AccelerometerScroll {
     
     async init() {
         try {
+            this.updateStatus('Checking device capabilities...');
+            
             // Check if DeviceOrientationEvent is supported
             if (!window.DeviceOrientationEvent) {
-                throw new Error('Device orientation not supported');
+                throw new Error('Device orientation not supported on this browser');
             }
             
-            // Request permission for iOS 13+
+            // Check if we're on HTTPS (required for most modern browsers)
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                throw new Error('HTTPS required for accelerometer access');
+            }
+            
+            this.updateStatus('Device orientation supported, checking permissions...');
+            
+            // Request permission for iOS 13+ and other browsers that require it
             if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                const permission = await DeviceOrientationEvent.requestPermission();
-                if (permission !== 'granted') {
-                    throw new Error('Device orientation permission denied');
-                }
+                this.updateStatus('Permission required - tap to request access');
+                
+                // Create a button to request permission (user gesture required)
+                this.createPermissionButton();
+                return; // Wait for user to click the button
             }
             
-            this.attachEventListeners();
-            this.startScrollLoop();
-            console.log('Accelerometer scrolling initialized');
+            // For Android and other browsers, try to start directly
+            this.finishInitialization();
             
         } catch (error) {
             console.error('Failed to initialize accelerometer scrolling:', error);
+            this.updateStatus(`Error: ${error.message}`);
             this.showFallbackMessage();
         }
+    }
+    
+    createPermissionButton() {
+        const button = document.createElement('button');
+        button.textContent = '🔓 Enable Accelerometer Access';
+        button.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10000;
+            padding: 15px 25px;
+            font-size: 16px;
+            background: #007AFF;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        `;
+        
+        button.onclick = async () => {
+            try {
+                const permission = await DeviceOrientationEvent.requestPermission();
+                button.remove();
+                
+                if (permission === 'granted') {
+                    this.finishInitialization();
+                } else {
+                    throw new Error('Permission denied by user');
+                }
+            } catch (error) {
+                button.remove();
+                this.updateStatus(`Permission error: ${error.message}`);
+                console.error('Permission request failed:', error);
+            }
+        };
+        
+        document.body.appendChild(button);
+    }
+    
+    finishInitialization() {
+        this.attachEventListeners();
+        this.startScrollLoop();
+        this.updateStatus('Ready! Press spacebar to activate or use controls below');
+        console.log('Accelerometer scrolling initialized successfully');
     }
     
     attachEventListeners() {
@@ -58,6 +113,11 @@ class AccelerometerScroll {
         // Get tilt values (beta = front-back, gamma = left-right)
         const beta = event.beta || 0;   // -180 to 180 (front/back tilt)
         const gamma = event.gamma || 0; // -90 to 90 (left/right tilt)
+        
+        // Debug logging (remove in production)
+        if (Math.random() < 0.01) { // Log occasionally to avoid spam
+            console.log(`Orientation: beta=${beta.toFixed(1)}, gamma=${gamma.toFixed(1)}`);
+        }
         
         // Calculate scroll velocities based on tilt
         // Normalize and apply threshold
