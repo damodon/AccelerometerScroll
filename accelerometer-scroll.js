@@ -1,6 +1,6 @@
 class AccelerometerScroll {
     constructor(options = {}) {
-        this.sensitivity = options.sensitivity || 2;
+        this.sensitivity = options.sensitivity || 5;
         this.threshold = options.threshold || 0.5;
         this.maxScrollSpeed = options.maxScrollSpeed || 20;
         this.smoothing = options.smoothing || 0.8;
