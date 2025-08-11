@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accelerometer Scrolling Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 200vh; /* Ensure page is scrollable */
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .status-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .status.active {
+            background: rgba(46, 204, 113, 0.9);
+        }
+        
+        .status.inactive {
+            background: rgba(231, 76, 60, 0.9);
+        }
+        
+        .status.error {
+            background: rgba(230, 126, 34, 0.9);
+        }
+        
+        .instructions {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+        
+        .section {
+            margin: 40px 0;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(46, 204, 113, 0.1);
+            border-radius: 10px;
+            border: 2px solid #2ecc71;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 5px;
+            transition: transform 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .demo-content {
+            text-align: justify;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .status-panel {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Accelerometer Scrolling Demo</h1>
+        
+        <div id="accelerometer-status" class="status-panel">
+            Loading accelerometer...
+        </div>
+        
+        <div class="instructions">
+            <h3>📱 How to Use:</h3>
+            <ul>
+                <li><strong>Mobile/Tablet:</strong> Tilt your device forward/backward to scroll up/down</li>
+                <li><strong>Horizontal:</strong> Tilt left/right to scroll horizontally</li>
+                <li><strong>Toggle:</strong> Press spacebar to activate/deactivate</li>
+                <li><strong>Speed:</strong> The more you tilt, the faster it scrolls</li>
+            </ul>
+        </div>
+        
+        <div class="controls">
+            <button onclick="window.accelerometerScroll?.start()">▶️ Activate</button>
+            <button onclick="window.accelerometerScroll?.stop()">⏸️ Deactivate</button>
+            <button onclick="window.accelerometerScroll?.toggle()">🔄 Toggle</button>
+        </div>
+        
+        <div class="section">
+            <h2>Welcome to the Future of Scrolling</h2>
+            <div class="demo-content">
+                <p>This demonstration showcases how accelerometer data can be used to create an intuitive scrolling experience. By tilting your mobile device or tablet, you can navigate through content in a natural and engaging way.</p>
+                
+                <div class="highlight">
+                    <strong>🌟 Key Features:</strong>
+                    <ul>
+                        <li>Tilt-based scrolling in all directions</li>
+                        <li>Adjustable sensitivity and smoothing</li>
+                        <li>Automatic permission handling for iOS devices</li>
+                        <li>Smooth acceleration and deceleration</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>The Science Behind Motion</h2>
+            <div class="demo-content">
+                <p>Accelerometers measure the acceleration forces acting on a device. In the context of smartphones and tablets, they detect the orientation and movement of the device in three-dimensional space. This technology enables innovative user interfaces that respond to physical gestures.</p>
+                
+                <p>The DeviceOrientationEvent API provides access to the device's orientation data, including alpha (compass direction), beta (front-to-back tilt), and gamma (left-to-right tilt) values. By processing these values, we can create responsive and intuitive control schemes.</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Applications and Use Cases</h2>
+            <div class="demo-content">
+                <p>Motion-controlled interfaces have numerous applications across various domains:</p>
+                
+                <ul>
+                    <li><strong>Gaming:</strong> Steering controls, character movement, and immersive experiences</li>
+                    <li><strong>Accessibility:</strong> Alternative input methods for users with motor impairments</li>
+                    <li><strong>Presentation Tools:</strong> Hands-free navigation through slides and content</li>
+                    <li><strong>Virtual Reality:</strong> Natural interaction with 3D environments</li>
+                    <li><strong>Fitness Apps:</strong> Exercise tracking and form analysis</li>
+                </ul>
+                
+                <div class="highlight">
+                    <p><strong>💡 Did you know?</strong> Modern smartphones contain multiple sensors including accelerometers, gyroscopes, and magnetometers that work together to provide precise motion tracking capabilities.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Technical Implementation</h2>
+            <div class="demo-content">
+                <p>This scrolling system uses several advanced techniques to provide a smooth user experience:</p>
+                
+                <ul>
+                    <li><strong>Threshold Filtering:</strong> Prevents unwanted scrolling from minor movements</li>
+                    <li><strong>Velocity Smoothing:</strong> Applies interpolation to reduce jittery motion</li>
+                    <li><strong>Speed Clamping:</strong> Limits maximum scroll speed for control</li>
+                    <li><strong>Permission Handling:</strong> Automatically requests necessary permissions on iOS</li>
+                    <li><strong>Graceful Fallback:</strong> Handles devices without accelerometer support</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Browser Compatibility</h2>
+            <div class="demo-content">
+                <p>The DeviceOrientationEvent API is widely supported across modern mobile browsers. However, there are some considerations:</p>
+                
+                <ul>
+                    <li><strong>iOS Safari:</strong> Requires explicit permission request (iOS 13+)</li>
+                    <li><strong>Chrome Mobile:</strong> Requires HTTPS for security</li>
+                    <li><strong>Desktop Browsers:</strong> Limited sensor availability</li>
+                    <li><strong>Privacy Settings:</strong> Users can disable motion sensors</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Try It Yourself</h2>
+            <div class="demo-content">
+                <p>To experience the full effect of accelerometer scrolling, make sure you're on a mobile device or tablet. Tilt your device gently in different directions and observe how the page responds to your movements. The scrolling speed increases proportionally with the tilt angle.</p>
+                
+                <div class="highlight">
+                    <p><strong>🚀 Pro Tip:</strong> Start with small tilts to get a feel for the sensitivity, then gradually increase the angle for faster scrolling. Use the spacebar or control buttons to easily toggle the feature on and off.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Customization Options</h2>
+            <div class="demo-content">
+                <p>The accelerometer scrolling system is highly customizable. You can adjust various parameters to match your specific needs:</p>
+                
+                <ul>
+                    <li><strong>Sensitivity:</strong> Controls how much tilt is needed for scrolling</li>
+                    <li><strong>Threshold:</strong> Minimum tilt angle required to trigger scrolling</li>
+                    <li><strong>Max Speed:</strong> Maximum scrolling velocity</li>
+                    <li><strong>Smoothing:</strong> Amount of interpolation applied to movements</li>
+                </ul>
+                
+                <p>These settings can be fine-tuned based on user preferences, device characteristics, or specific application requirements.</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Future Possibilities</h2>
+            <div class="demo-content">
+                <p>As sensor technology continues to advance, we can expect even more sophisticated motion-based interactions. Future developments might include:</p>
+                
+                <ul>
+                    <li>Machine learning-powered gesture recognition</li>
+                    <li>Multi-device synchronized interactions</li>
+                    <li>Advanced haptic feedback integration</li>
+                    <li>AR/VR-enhanced motion controls</li>
+                    <li>Biometric-aware adaptive interfaces</li>
+                </ul>
+                
+                <div class="highlight">
+                    <p><strong>🌍 Impact:</strong> Motion-controlled interfaces have the potential to make technology more accessible, intuitive, and engaging for users worldwide.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Conclusion</h2>
+            <div class="demo-content">
+                <p>Accelerometer-based scrolling represents just one example of how modern web technologies can create more natural and intuitive user experiences. By leveraging device sensors, we can build interfaces that respond to physical gestures and movements, opening up new possibilities for interaction design.</p>
+                
+                <p>Whether you're developing games, accessibility tools, or innovative web applications, motion-controlled interfaces offer a powerful way to engage users and create memorable experiences. The key is to implement these features thoughtfully, with proper fallbacks and user controls.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="accelerometer-scroll.js"></script>
+</body>
+</html>
