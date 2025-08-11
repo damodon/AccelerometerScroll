@@ -1,8 +1,8 @@
 class AccelerometerScroll {
     constructor(options = {}) {
-        this.sensitivity = options.sensitivity || 5;
-        this.threshold = options.threshold || 0.1;
-        this.maxScrollSpeed = options.maxScrollSpeed || 30;
+        this.sensitivity = options.sensitivity || 2;
+        this.threshold = options.threshold || 0.5;
+        this.maxScrollSpeed = options.maxScrollSpeed || 20;
         this.smoothing = options.smoothing || 0.8;
         
         this.currentVelocity = { x: 0, y: 0 };
@@ -120,9 +120,9 @@ class AccelerometerScroll {
         }
         
         // Calculate scroll velocities based on tilt
-        // Normalize and apply threshold
-        const normalizedY = this.applyThreshold(beta / 90); // Normalize to -2 to 2 range
-        const normalizedX = this.applyThreshold(gamma / 45); // Normalize to -2 to 2 range
+        // Normalize and apply threshold (much more sensitive ranges)
+        const normalizedY = this.applyThreshold(beta / 20); // Now 20° = 1.0 (much more responsive)
+        const normalizedX = this.applyThreshold(gamma / 15); // Now 15° = 1.0 (more responsive)
         
         // Apply sensitivity and speed limits
         const targetY = this.clamp(normalizedY * this.sensitivity, -this.maxScrollSpeed, this.maxScrollSpeed);
