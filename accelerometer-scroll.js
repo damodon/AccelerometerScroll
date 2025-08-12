@@ -124,8 +124,8 @@ class AccelerometerScroll {
         const normalizedY = this.applyThreshold(beta / 20); // Now 20° = 1.0 (much more responsive)
         const normalizedX = this.applyThreshold(gamma / 15); // Now 15° = 1.0 (more responsive)
         
-        // Apply sensitivity and speed limits
-        const targetY = this.clamp(normalizedY * this.sensitivity, -this.maxScrollSpeed, this.maxScrollSpeed);
+        // Apply sensitivity and speed limits (negative Y to reverse direction for gravity effect)
+        const targetY = this.clamp(-normalizedY * this.sensitivity, -this.maxScrollSpeed, this.maxScrollSpeed);
         const targetX = this.clamp(normalizedX * this.sensitivity, -this.maxScrollSpeed, this.maxScrollSpeed);
         
         // Apply smoothing to prevent jittery movement
